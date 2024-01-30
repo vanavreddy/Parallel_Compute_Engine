@@ -1,0 +1,8 @@
+name: pg_env
+channels:
+  - anaconda
+  - conda-forge
+dependencies:
+  - postgresql=11.4 
+  - cmake 
+  - tzdata

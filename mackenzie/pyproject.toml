@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mackenzie"
+version = "0.0.1"
+authors = [
+  { name="Parantapa Bhattacharya", email="pb+pypi@parantapa.net" },
+]
+description = "MacKenzie: A Multi Cluster Scheduler"
+readme = "README.rst"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+dependencies = [
+    "click",
+    "rich",
+    "pydantic",
+    "more_itertools",
+    "rpyc",
+    "apsw",
+]
+
+[project.urls]
+"Homepage" = "http://github.com/NSSAC/mackenzie"
+
+[project.scripts]
+mackenzie = "mackenzie.cli:cli"

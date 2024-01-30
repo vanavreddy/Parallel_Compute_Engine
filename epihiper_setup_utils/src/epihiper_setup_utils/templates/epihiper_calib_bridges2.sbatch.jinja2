@@ -1,0 +1,60 @@
+#!/bin/bash
+# Sbatch script running EpiHiper calibration on Bridges2
+# Calibration mode
+
+#SBATCH --job-name {{ job_name }}
+#SBATCH --time {{ max_runtime }}
+#SBATCH {{ sbatch_job_args }}
+#SBATCH {{ sbatch_pipeline_args }}
+#SBATCH --output "{{ output_dir }}/slurm-%j.out"
+
+{{ env_file_contents }}
+
+COMMON_DIR="{{ common_dir }}"
+OUTPUT_DIR="{{ output_dir }}"
+
+# We will execute from $OUTPUT_DIR
+cd "$OUTPUT_DIR"
+
+# Load the required modules
+. /etc/profile
+module load openmpi/4.0.5-gcc10.2.0 python/3.8.6
+
+set -Eeuo pipefail
+set -x
+
+# nodejs path fix
+set +x
+OLDPATH="$PATH"
+export PATH="$NODE_CONDA_ENV/bin:$PATH"
+set -x
+
+# Execute the updateParameter script
+if [[ ! -x "$COMMON_DIR/updateParameter" ]] ; then
+    chmod +x "$COMMON_DIR/updateParameter"
+fi
+"$COMMON_DIR/updateParameter" "$COMMON_DIR" "." "."
+
+# Check for addNoise.sh
+if [[ -e "addNoise.sh" ]] ; then
+    chmod +x addNoise.sh
+    ./addNoise.sh
+fi
+
+# nodejs path fix back
+set +x
+export PATH="$OLDPATH"
+set -x
+
+# Run EpiHiper
+mpirun -n "$SLURM_NTASKS" "$EPIHIPER_BIN_DIR/EpiHiper" --config "runParameters.json"
+
+# Compress the output files
+gzip -9 -f "output.csv"
+gzip -9 -f "outputSummary.csv"
+
+# Compute the objective
+"$RSCRIPT_EXE" "$COMMON_DIR/objective" "$COMMON_DIR" "." "." > objectiveOutput.txt
+
+echo "Calibration run completed successfully"
+exit 0

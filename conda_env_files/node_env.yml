@@ -1,0 +1,5 @@
+name: node_env
+channels:
+  - conda-forge
+dependencies:
+  - nodejs=15

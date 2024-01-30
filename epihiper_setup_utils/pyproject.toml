@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "epihiper-setup-utils"
+version = "0.0.1"
+authors = [
+  { name="Parantapa Bhattacharya", email="pb+pypi@parantapa.net" },
+]
+description = "Utilities for setting up and EpiHiper runs."
+readme = "README.rst"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+dependencies = [
+    "click",
+    "rich",
+    "jinja2",
+    "pydantic",
+    "more_itertools",
+    "python-dotenv",
+    "numpy",
+    "scipy",
+    "pandas",
+    "bayesian-optimization",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/NSSAC/epihiper-setup-utils"
+
+[project.scripts]
+epihiper-setup-utils = "epihiper_setup_utils.cli:cli"
