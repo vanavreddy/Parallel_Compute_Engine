@@ -10,11 +10,6 @@ CUR_SCRIPT="$(realpath "${BASH_SOURCE[0]}")"
 # This will change form time to time
 # Things to include: account, reservation, qos, etc.
 # Things not to include here: partition, time, output, jobname, etc.
-PIPELINE_SBATCH_ARGS="--account nssac_covid19" 
-export PIPELINE_SBATCH_ARGS
-
-# Log output dir
-LOG_OUTPUT_DIR="/scratch/$USER/var/log"
 
 # Source the environment
 . "../environment.sh"

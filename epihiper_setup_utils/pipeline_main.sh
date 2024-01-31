@@ -68,7 +68,7 @@ cmd_submit_synpop_db () {
         --nodes 1 \
         --ntasks-per-node 1 \
         --cpus-per-task ${CPU_PER_NODE} \
-        --partition bii \
+        --partition ${PARTITION} \
         --time 1-00:00:00 \
         --output "$PIPELINE_ROOT/logs/%x-%j.out" \
         "$CUR_SCRIPT" run_synpop_db
@@ -100,7 +100,7 @@ cmd_submit_controller () {
         --nodes 1 \
         --ntasks-per-node 1 \
         --cpus-per-task 2 \
-        --partition bii \
+        --partition ${PARTITION} \
         --time 1-00:00:00 \
         --output "$PIPELINE_ROOT/logs/%x-%j.out" \
         "$CUR_SCRIPT" run_controller
@@ -132,7 +132,7 @@ cmd_submit_agent () {
         --nodes 1 \
         --ntasks-per-node 1 \
         --cpus-per-task 2 \
-        --partition bii \
+        --partition ${PARTITION} \
         --time 1-00:00:00 \
         --output "$PIPELINE_ROOT/logs/%x-%j.out" \
         "$CUR_SCRIPT" run_agent
@@ -184,7 +184,7 @@ cmd_submit_csm_task_source () {
         --nodes 1 \
         --ntasks-per-node 1 \
         --cpus-per-task 2 \
-        --partition bii \
+        --partition ${PARTITION} \
         --time 1-00:00:00 \
         --output "$PIPELINE_ROOT/logs/%x-%j.out" \
         "$CUR_SCRIPT" run_csm_task_source
@@ -225,7 +225,7 @@ cmd_submit_bots_task_source () {
         --nodes 1 \
         --ntasks-per-node 1 \
         --cpus-per-task 2 \
-        --partition bii \
+        --partition ${PARTITION} \
         --time 1-00:00:00 \
         --output "$PIPELINE_ROOT/logs/%x-%j.out" \
         "$CUR_SCRIPT" run_bayes_opt_task_source

@@ -13,6 +13,7 @@ from rich.pretty import pprint
 
 MULTIPLIERS = [8, 12, 16]
 PIPELINE_SBATCH_ARGS = os.environ["PIPELINE_SBATCH_ARGS"]
+PARTITION = os.environ["PARTITION"]
 
 def print_cmd(cmd: str, console: Console):
     cmd = dedent(cmd).strip()
@@ -32,12 +33,11 @@ def main():
                 sbatch
                     --job-name partition:{synpop}:{multiplier}
                     {PIPELINE_SBATCH_ARGS}
-                    --partition bii
+                    --partition {PARTITION}
                     --ntasks 1
                     --cpus-per-task 2
-                    --mem-per-cpu 4G
                     --time 2:00:00
-                    --output /scratch/%u/var/log/%x-%j.out
+                    --output /anvil/scratch/%u/log/%x-%j.out
                     ./partition_main.sh run_epihiper_parition
                 """
             print_cmd(cmd, console)
@@ -48,7 +48,6 @@ def main():
             env = os.environ | env
 
             run(cmd, env=env, capture_output=False, check=True)
-            exit()
 
 if __name__ == "__main__":
     main()
