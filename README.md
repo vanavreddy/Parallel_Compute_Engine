@@ -6,19 +6,19 @@ There are multiple steps to setup different parts of the pipeline. One may not
 need to execute all the steps every time. The list below shows steps for for 
 first time setup.
 
-1. Setting up the Conda environment
-2. Setting up the environment file
-3. Partitioning the networks
-4. Configuring the MacKenzie scheduling system
+1. Set up the Conda environment
+2. Set up the Environment file
+3. Partition the Networks
+4. Configure MacKenzie Scheduling System
 
-## Setting up the Conda Environment
+## 1. Setting up the Conda Environment
 
 We use Conda for managing software dependencies
 other than EpiHiper, C++ compilers, and MPI implementations.
 In particular, the conda environments are used for
 Python, R, Node.js, PostgreSQL, and Cmake.
 
-### Install Miniconda
+### 1.1 Install Miniconda
  
 We expect that the user of the pipeline will install Miniconda
 in their home directory on every compute cluster.
@@ -52,7 +52,7 @@ Please ensure that you have Conda version 4.11+ once installed.
     conda 4.11.0
    ```
 
-### Configure Conda Environments
+### 1.2 Configure Conda Environments
 
 We create different conda environments to manage
 Python, R, Node.js, and PostgreSQL.
@@ -65,10 +65,10 @@ and fzf in the Python environment.
    ```
     # Create the Conda environments
      
-    conda create -y -n py_env python=3.11 fzf
-    conda create -y -n R_env r-essentials r-base=4.1.0
-    conda create -y -n node_env nodejs=15
-    conda create -y -n pg_env postgresql=11.4 cmake tzdata
+    conda env create -f conda_env_files/py_env.yml
+    conda env create -f conda_env_files/r_env.yml
+    conda env create -f conda_env_files/node_env.yml
+    conda env create -f conda_env_files/pg_env.yml
      
     # Install pedantic version 1.10
      
@@ -78,7 +78,7 @@ and fzf in the Python environment.
      
     # Install R dependencies in R_env (this step may take a few minutes)
      
-    conda activate R_env
+    conda activate r_env
     Rscript -e 'install.packages(c("R.utils", "data.table", "EpiEstim", "jsonlite", "bit64"), repos="http://cran.r-project.org")'
     conda deactivate
      
@@ -88,30 +88,30 @@ and fzf in the Python environment.
     npm install -g  @shoops/epi-hiper-validator
     conda deactivate
   
-    # Ensure that postgres has access to timezone info
-  
-    conda activate pg_env
-    cd $CONDA_PREFIX/share
-    ln -s /usr/share/zoneinfo
-    cd ~
-    conda deactivate
-  
     # Install FZF fuzzy finder in the base conda environment
   
     conda install -n base fzf
    ```
 
-## Install epihiper_setup_utils
+## 2. Install epihiper_setup_utils and mackenzie 
 
-In the epihiper_setup_utils directory of the git repository execute:
+Install epihiper_setup_utils,
 
-   ```
-     conda activate py_env
-     pip install -U -e .
-     conda deactivate
-   ```
+  ```
+   $ conda activate py_env
+   $ cd epihiper_setup_utils
+   $ pip install -U -e .
+  ```
 
-### Setting Up Pipeline Cache Directory
+Now, install the components in MacKenzie directory,
+
+  ```
+   $ cd mackenzie
+   $ pip install -U -e .
+   $ conda deactivate
+  ```
+
+### 2.1 Setting Up Pipeline Cache Directory
 
 We need to define pipeline cache directory on each cluster.
 This directory must store:
@@ -131,7 +131,7 @@ are owned by the same user as the one running the PostgreSQL process.
     $ export PIPELINE_CACHE=$PROJECT/pipeline_cache
    ```
 
-### Compiling EpiHiper
+### 2.2 Compiling EpiHiper
 
 We compile EpiHiper on every cluster
 with the cluster's optimized compiler and MPI implementation.
@@ -221,48 +221,44 @@ so that cmake can find the conda environment's postgres installation.
   $ cmake .. -DENABLE_LOCATION_ID=OFF -DENABLE_MPI=ON -DENABLE_OMP=OFF -DCMAKE_BUILD_TYPE=Release
   $ make -j 64
 ```
-## Partitioning the networks
-```
- $ cd epihiper_pipeline_scripts2
 
- # Modify the environment.sh file such that SYNPOP_ROOT and FZF_CMD
-point to the correct filesystem paths on that cluster.
+## 3. Partitioning the networks
+```
+  # Modify the environment.sh file such that SYNPOP_ROOT and FZF_CMD
+ point to the correct filesystem paths on that cluster.
 
- $ conda activate py_env
- $ . environment.sh
- $ python make_partitions.py
+  $ . environment.sh
+  $ cd synpop_partition
+ 
+  $ conda activate py_env
+  $ python make_partitions.py
 ```
 
-## Configuring the MacKenzie Scheduling System
-Now, install the components in MacKenzie directory.
+## 4. Start the pipeline
 
-```
- $ cd mackenzie
- $ pip install -e -U .
-```
 Once this step finishes, cd back to epihiper-setup-utils and execute 
 the following steps (replace <cluster_name> with rivanna, anvil or bridges).
 
 ```
-$ cd epihiper-setup-utils/cluster_setups/<cluster-name>
-
-# change the environment.sh file to reflect file system paths on that specific cluster
-
-$ conda activate py_env
-
-$ . environment.sh
-
-$ ./pipeline_main.sh
-
-# Runing this script displays options from which you can select to run different
-components and setup steps, using MacKenzie, to submit EpiHiper jobs.
-
-# The correct order to select from the displayed options is:
-# 1) make_pipeline_root -> This will create the necessary dictories.
-# 2) submit_synpop_db -> This will initialize the SynthPopDB databse.
-# 3) submit_controller -> This will start MacKenzie controller process on a compute node.
-# 4) submit_agent -> This will start the agent. This step must be executed only after controller is started up.
-# 5) add_setup ->
-# 6) submit_bots_task_source -> this will start up bot which pulls ready tasks to execute on compute nodes
+  # change the environment.sh file to reflect file system paths on that specific cluster
+  
+  $ . environment.sh
+  
+  $ cd epihiper-setup-utils
+  
+  $ conda activate py_env
+  
+  $ ./pipeline_main.sh
+  
+  # Runing this script displays options from which you can select to run different
+  components and setup steps, using MacKenzie, to submit EpiHiper jobs.
+  
+  # The correct order to select from the displayed options is:
+  # 1) make_pipeline_root -> This will create the necessary dictories.
+  # 2) submit_synpop_db -> This will initialize the SynthPopDB databse.
+  # 3) submit_controller -> This will start MacKenzie controller process on a compute node.
+  # 4) submit_agent -> This will start the agent. This step must be executed only after controller is started up.
+  # 5) add_setup ->
+  # 6) submit_bots_task_source -> this will start up bot which pulls ready tasks to execute on compute nodes
 
 ```
