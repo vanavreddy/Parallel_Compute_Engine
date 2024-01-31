@@ -7,11 +7,12 @@ need to execute all the steps every time. The list below shows steps for for
 first time setup.
 
 1. Set up the Conda environment
-2. Set up the Environment file
-3. Partition the Networks
-4. Configure MacKenzie Scheduling System
+2. Set up the Environment File
+3. Install epihiper_setup_utils and mackenzie
+4. Partition the Networks
+5. Start the Pipeline
 
-## 1. Setting up the Conda Environment
+## 1. Set up the Conda environment
 
 We use Conda for managing software dependencies
 other than EpiHiper, C++ compilers, and MPI implementations.
@@ -93,7 +94,13 @@ and fzf in the Python environment.
     conda install -n base fzf
    ```
 
-## 2. Install epihiper_setup_utils and mackenzie 
+## 2. Set up the Environment file
+
+On the top level of the directory, change the environment.sh file to reflect the local paths and slurm condiguration specific for that cluster, e.g., rivanna or anvil. The changes may also include conda paths, path to pipeline cache directory and calibration setup files.
+
+We have provided template environment files for specific clusters in the cluster_template_files directory. Copy the appropriate files to the top level and make changes as needed.
+
+## 3. Install epihiper_setup_utils and mackenzie 
 
 Install epihiper_setup_utils,
 
@@ -111,7 +118,7 @@ Now, install the components in MacKenzie directory,
    $ conda deactivate
   ```
 
-### 2.1 Setting Up Pipeline Cache Directory
+### 3.1 Setting Up Pipeline Cache Directory
 
 We need to define pipeline cache directory on each cluster.
 This directory must store:
@@ -131,7 +138,7 @@ are owned by the same user as the one running the PostgreSQL process.
     $ export PIPELINE_CACHE=$PROJECT/pipeline_cache
    ```
 
-### 2.2 Compiling EpiHiper
+### 3.2 Compiling EpiHiper
 
 We compile EpiHiper on every cluster
 with the cluster's optimized compiler and MPI implementation.
@@ -222,7 +229,7 @@ so that cmake can find the conda environment's postgres installation.
   $ make -j 64
 ```
 
-## 3. Partitioning the networks
+## 4. Partitioning the networks
 ```
   # Modify the environment.sh file such that SYNPOP_ROOT and FZF_CMD
  point to the correct filesystem paths on that cluster.
@@ -234,7 +241,7 @@ so that cmake can find the conda environment's postgres installation.
   $ python make_partitions.py
 ```
 
-## 4. Start the pipeline
+## 5. Start the pipeline
 
 Once this step finishes, cd back to epihiper-setup-utils and execute 
 the following steps (replace <cluster_name> with rivanna, anvil or bridges).
