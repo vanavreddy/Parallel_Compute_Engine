@@ -237,15 +237,6 @@ so that cmake can find the conda environment's postgres installation.
   $ . environment.sh
   $ cd synpop_partition
   $ conda activate py_env
-
-  # On Anvil, export the following env variables
-  $ export PIPELINE_SBATCH_ARGS="--account cis230166"
-  $ export PARTITION="standard"
-
-  # On Rivanna, export the following env variables
-  $ export PIPELINE_SBATCH_ARGS="--account nssac_covid19"
-  $ export PARTITION="bii"
-  
   $ python make_partitions.py
 ```
 
