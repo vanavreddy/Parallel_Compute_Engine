@@ -1,0 +1,26 @@
+Region: us-east-1
+Image:
+  Os: ubuntu2004
+HeadNode:
+  InstanceType: hpc7g.4xlarge
+  Networking:
+    SubnetId: subnet-06c72b747bd512c00
+  Ssh:
+    KeyName: poc-hpc-cluster
+Scheduling:
+  Scheduler: slurm
+  SlurmQueues:
+  - Name: bii-testq
+    ComputeResources:
+    - Name: hpc7g4xlarge
+      Instances:
+      - InstanceType: hpc7g.4xlarge
+      MinCount: 0
+      MaxCount: 2
+      Efa:
+        Enabled: true
+    Networking:
+      PlacementGroup:
+        Enabled: true
+      SubnetIds:
+      - subnet-003546501b9666644
