@@ -47,46 +47,60 @@ avoid requirement version conflicts with other pip packages.
 ```
 $ conda env create -f conda_env_files/aws_env.yml
 $ conda activate aws_env
+```
 
-# Install Node Version Manager with the lastest Long-Term Support (TS) Node.js version.
+Install Node Version Manager with the lastest Long-Term Support (TS) Node.js version.
 
+```
 $ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
 $ chmod ug+x ~/.nvm/nvm.sh
 $ source ~/.nvm/nvm.sh
 $ nvm install --lts
 $ node --version
+```
 
-# Verify that AWS ParallelCluster is installed correctly.
+Verify that AWS ParallelCluster is installed correctly.
 
+```
 $ pcluster version
+{
+  "version": "3.8.0"
+}
+```
 
-# To upgrade to the latest version of AWS ParallelCluster, run the installation command again.
+To upgrade to the latest version of AWS ParallelCluster, run the installation command again.
 
+```
 $ pip install --upgrade "aws-parallelcluster"
+```
 
-# Install the AWS Command Line Interface tools
+Install the AWS Command Line Interface tools.
 
+```
 $ pip install awscli
 ```
 
-You can use the deactivate command to exit the virtual environment. 
+You can use the "conda deactivate" deactivate command to exit the virtual environment. 
 Each time you start a session, you must reactivate the environment.
 
-For additional details, refer to [AWS resource](https://docs.aws.amazon.com/parallelcluster/latest/ug/install-v3-virtual-environment.html)
+For additional details, refer to [AWS resource](https://docs.aws.amazon.com/parallelcluster/latest/ug/install-v3-virtual-environment.html).
 
 ## Configure and create a cluster with the AWS ParallelCluster command line interface
 
 The steps given below are generic and serve only as an example. 
 Customize the steps to suit your specific requirements.
 
-1. Authenticate and create a session
-2. Create the cluster
-3. Setup Epihiper setup utils on head node
+1. Authenticate using AWS session information
+2. Configure and create the AWS HPC cluster
+3. Setup Epihiper setup utils on the AWS HPC cluster's headnode
 
-### Authenticate and create a session
+### Authenticate using AWS session information
 
-To authenticate and create a session, we need the get credentials for AdministratorAccess. UVA ITS will provide a specific link to login to AWS admin console. Use this link to authenticate. Once authenticated, you will need "AWS Access Key ID", "AWS Secret Access Key
-" and "AWS Session Token". This information can be retieved by clicking on "Command line and programmatic access" after you login to the AWS admin console. 
+To authenticate and create a session, we need to get the credentials for AdministratorAccess. 
+UVA ITS would provide a specific link to login to AWS admin console. Use this link to authenticate. 
+Once authenticated, you will need "AWS Access Key ID", "AWS Secret Access Key
+" and "AWS Session Token". This information can be retieved by clicking on 
+"Command line and programmatic access" after you login to the AWS admin console. 
 
 ```
 $ export AWS_ACCESS_KEY_ID="copy-string-from-Command-line-and-programmatic-access"
@@ -94,13 +108,16 @@ $ export AWS_SECRET_ACCESS_KEY="copy-string-from-Command-line-and-programmatic-a
 $ export AWS_SESSION_TOKEN="copy-string-from-Command-line-and-programmatic-access"
 ```
 
-Now, your credentials are established. Additionally, you may want to explore **aws configure** and **aws configure sso** options.
+Now, your credentials are established. Additionally, you may want to explore 
+**aws configure** and **aws configure sso** options 
+[here](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html).
 
-### Create the cluster
+### Configure and create the AWS HPC cluster
 
-This steps to configure AWS cluster are slightly involved, requiring the user 
-to make decisions based on the type of cluster resources and other details 
-specific to their AWS account. Follow this [link](https://docs.aws.amazon.com/parallelcluster/latest/ug/install-v3-configuring.html) for more information. 
+The steps to configure AWS cluster are slightly involved requiring the user 
+to make choices based on the type of cluster resources and other details 
+specific to their AWS account. Follow this [link](https://docs.aws.amazon.com/parallelcluster/latest/ug/install-v3-configuring.html) 
+for more information. 
 
 Create your first cluster by using the **pcluster configure** CLI command to initiate 
 a wizard that prompts you for all of the information that's required to configure 
@@ -110,7 +127,8 @@ as the scheduler compared to using Slurm.
 ```
 $  pcluster configure --config my-config-file.yaml
 
-# choose the AWS Region where you want your cluster to run. Example **us-east-1**
+INFO: Configuration file my-config-file.yaml will be written.
+Press CTRL-C to interrupt the procedure.
 
 Allowed values for AWS Region ID:
 1. ap-northeast-1
@@ -130,10 +148,12 @@ Allowed values for AWS Region ID:
 15. us-west-1
 16. us-west-2
 AWS Region ID [us-east-1]: 13
+
+# Here, to select **us-east-1**, enter **13** at the prompt.
 ```
 
 The key pair is selected from the key pairs that are registered with Amazon EC2 in the selected AWS Region.
-Select the key-pair, this will be one of the key-pairs you created in the earlier step.
+If you have multiple key-pairs, select one of the key-pairs you created in the earlier step.
 
 ```
 Allowed values for EC2 Key Pair Name:
@@ -141,15 +161,19 @@ Allowed values for EC2 Key Pair Name:
 EC2 Key Pair Name [poc-hpc-cluster]: 1
 ```
 
-Choose the scheduler to use with your cluster.
+Choose the scheduler to use for your HPC cluster.
 
 ```
 Allowed values for Scheduler:
 1. slurm
 2. awsbatch
 Scheduler [slurm]: 1
+
+# Here, to select "slurm", enter **1** at the prompt.
 ```
+
 Choose the operating system.
+
 ```
 Allowed values for Operating System:
 1. alinux2
@@ -159,6 +183,8 @@ Allowed values for Operating System:
 5. rhel8
 6. rocky8
 Operating System [alinux2]: 3
+
+# Here, to select "ubuntu2004", enter **3** at the prompt.
 ```
 
 Choose head node instance type, for list of instances refer to [AWS instance types](https://aws.amazon.com/ec2/instance-types/).
@@ -181,9 +207,12 @@ Enable EFA to run applications that require high levels of inter-instance
 communication at scale on AWS at no additional charge
 
 ```
+The EC2 instance selected supports enhanced networking capabilities using Elastic Fabric Adapter (EFA). EFA enables you to run applications requiring high levels of inter-node communications at scale on AWS at no additional charge (https://docs.aws.amazon.com/parallelcluster/latest/ug/efa-v3.html).
 Enable EFA on hpc7g.4xlarge (y/n) [y]: y
 Maximum instance count [10]: 10
 Placement Group name []:
+
+# Here, press **enter** or **return** to leave group name blank.
 ```
 
 After the previous steps are completed, decide whether to use an existing VPC or
@@ -193,13 +222,8 @@ AWS ParallelCluster can create a new one for you.
 ```
 Automate VPC creation? (y/n) [n]: y
 Allowed values for Availability Zone:
-1. us-east-1a
-2. us-east-1b
-3. us-east-1c
-4. us-east-1d
-5. us-east-1e
-6. us-east-1f
-Availability Zone [us-east-1a]:
+1. us-east-1d
+Availability Zone [us-east-1d]: 1
 Allowed values for Network Configuration:
 1. Head node in a public subnet and compute fleet in a private subnet
 2. Head node and compute fleet in the same public subnet
@@ -233,10 +257,14 @@ $ pcluster create-cluster --cluster-name my-test-cluster --cluster-configuration
 
 ```
 
-After successful completion of the above step, an yaml file my-config-file.yaml will be automatically saved in the current directory on your local machine. This file can be reused to create an AWS HPC cluster of the same configuration on demand. 
+After successful completion of the above steps, a yaml file named **my-config-file.yaml** will be automatically saved in the current directory on your local machine. This file can be reused to create AWS HPC cluster of the same configuration as above in the future. 
 
 ```
+# Create a cluster using saved yaml file
+
 $ pcluster create-cluster --cluster-configuration my-config-file.yml --cluster-name <cluster-name> --region us-east-1
+
+# This step may take several minutes to finish.
 ```
 
 Additionally, we have provided a sample config file (**sample-config-file.yml**) to create a simple cluster with one head node, and . You would need to change a few fields, specific to your credentials. Change the following fields in sample-config-file.yml, SubnetId: **subnet-06c72b747bd512c00**, Ssh: KeyName: **poc-hpc-cluster** and SubnetIds: - **subnet-003546501b9666644**.
@@ -252,7 +280,7 @@ $ pcluster describe-cluster --cluster-name bii-hpc-cluster
 Once the cluster is created, login to the headnode, you will need youe key-pair information.
 
 ```
-$ ssh --cluster-name bii-hpc-cluster -i <local-path>/aws-key-pair.pem
+$ ssh --cluster-name bii-hpc-cluster -i <local-path>/key-pair-name.pem
 ```
 
  After successful login to head node, install the packages needed to run EpiHiper-Code
