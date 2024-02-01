@@ -287,7 +287,7 @@ $ ssh --cluster-name bii-hpc-cluster -i <local-path>/key-pair-name.pem
 
 ```
 # Clone EpiHiper code from git
-
+git clone git@github.com:NSSAC/EpiHiper-code.git
 
 # Install required packages
 
