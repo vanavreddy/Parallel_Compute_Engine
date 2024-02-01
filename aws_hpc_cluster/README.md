@@ -88,9 +88,11 @@ Customize the steps to suit your specific requirements.
 To authenticate and create a session, we need the get credentials for AdministratorAccess. UVA ITS will provide a specific link to login to AWS admin console. Use this link to authenticate. Once authenticated, you will need "AWS Access Key ID", "AWS Secret Access Key
 " and "AWS Session Token". This information can be retieved by clicking on "Command line and programmatic access" after you login to the AWS admin console. 
 
+```
 $ export AWS_ACCESS_KEY_ID="copy-string-from-Command-line-and-programmatic-access"
 $ export AWS_SECRET_ACCESS_KEY="copy-string-from-Command-line-and-programmatic-access"
 $ export AWS_SESSION_TOKEN="copy-string-from-Command-line-and-programmatic-access"
+```
 
 Now, your credentials are established. Additionally, you may want to explore **aws configure** and **aws configure sso** options.
 
