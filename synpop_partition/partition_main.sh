@@ -7,18 +7,44 @@
 # So do not use this variable when running via slurm.
 CUR_SCRIPT="$(realpath "${BASH_SOURCE[0]}")"
 
-# This will change form time to time
-# Things to include: account, reservation, qos, etc.
-# Things not to include here: partition, time, output, jobname, etc.
-
 # Source the environment
 . "../environment.sh"
 export PYTHONPATH
 
+do_run_epihiper_parition_usa () {
+    set -Eeuo pipefail
+
+    # Inputs to be passed in via env variables
+    echo "SYNPOP=$SYNPOP"
+    echo "MULTIPLIER=$MULTIPLIER"
+
+    set -x
+
+    # Create output directory
+    OUTPUT_DIR="$PARTITION_CACHE_DIR/$SYNPOP/$MULTIPLIER"
+    if [[ -e "$OUTPUT_DIR" ]] ; then
+        rm -rf "$OUTPUT_DIR"
+    fi
+    mkdir -p "$OUTPUT_DIR"
+
+    # Setup output directory
+    "$PYTHON_EXE" "$CODE_DIR/epihiper_partition_setup.py" \
+        --contact-network-file "$SYNPOP_ROOT/$SYNPOP"/*_contact_network_config_*-contact_0_with_lid.txt \
+        --persontrait-file "$SYNPOP_ROOT/$SYNPOP"/*_persontrait_epihiper.txt \
+        --output-directory "$OUTPUT_DIR" \
+        --cluster "$CLUSTER" \
+        --multiplier "$MULTIPLIER"
+
+    # Run EpiHiper Partition
+    do_run_epihiper_parition
+
+    echo "Partitioning completed successfully"
+    exit 0
+}
+
 cmd_run_epihiper_parition () {
     . "../environment.sh"
     . "module_setup.sh"
-    . "$CODE_DIR/bash_include/partition_common.sh"
 
     do_run_epihiper_parition_usa
 }
