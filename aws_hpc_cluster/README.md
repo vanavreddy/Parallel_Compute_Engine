@@ -84,10 +84,18 @@ Customize the steps to suit your specific requirements.
 3. Setup Epihiper setup utils on head node
 
 ### Authenticate and create a session
+
 To authenticate and create a session, we need the get credentials for AdministratorAccess. UVA ITS will provide a specific link to login to AWS admin console. Use this link to authenticate. Once authenticated, you will need "AWS Access Key ID", "AWS Secret Access Key
 " and "AWS Session Token". This information can be retieved by clicking on "Command line and programmatic access" after you login to the AWS admin console. 
 
+$ export AWS_ACCESS_KEY_ID="copy-string-from-Command-line-and-programmatic-access"
+$ export AWS_SECRET_ACCESS_KEY="copy-string-from-Command-line-and-programmatic-access"
+$ export AWS_SESSION_TOKEN="copy-string-from-Command-line-and-programmatic-access"
+
+Now, your credentials are established. Additionally, you may want to explore **aws configure** and **aws configure sso** options.
+
 ### Create the cluster
+
 This steps to configure AWS cluster are slightly involved, requiring the user 
 to make decisions based on the type of cluster resources and other details 
 specific to their AWS account. Follow this [link](https://docs.aws.amazon.com/parallelcluster/latest/ug/install-v3-configuring.html) for more information. 
@@ -120,23 +128,27 @@ Allowed values for AWS Region ID:
 15. us-west-1
 16. us-west-2
 AWS Region ID [us-east-1]: 13
+```
 
-# The key pair is selected from the key pairs that are registered with Amazon EC2 in the selected AWS Region.
+The key pair is selected from the key pairs that are registered with Amazon EC2 in the selected AWS Region.
 Select the key-pair, this will be one of the key-pairs you created in the earlier step.
 
+```
 Allowed values for EC2 Key Pair Name:
 1. poc-hpc-cluster
 EC2 Key Pair Name [poc-hpc-cluster]: 1
+```
 
-# Choose the scheduler to use with your cluster.
+Choose the scheduler to use with your cluster.
 
+```
 Allowed values for Scheduler:
 1. slurm
 2. awsbatch
 Scheduler [slurm]: 1
-
-# Choose the operating system.
-
+```
+Choose the operating system.
+```
 Allowed values for Operating System:
 1. alinux2
 2. centos7
@@ -145,31 +157,38 @@ Allowed values for Operating System:
 5. rhel8
 6. rocky8
 Operating System [alinux2]: 3
+```
 
-# Choose head node instance type, for list of instances refer to [AWS instance types](https://aws.amazon.com/ec2/instance-types/).
+Choose head node instance type, for list of instances refer to [AWS instance types](https://aws.amazon.com/ec2/instance-types/).
 
+```
 Head node instance type [t2.micro]: hpc7g.4xlarge
+```
 
-# Choose the queue configuration. Note: Instance type can't be specified
+Choose the queue configuration. Note: Instance type can't be specified
 for multiple compute resources in the same queue.
 
-Choose the queue configuration. 
+``` 
 Number of queues [1]: 1
 Name of queue 1 [queue1]: bii-testq
 Number of compute resources for queue1 [1]: 1
 Compute instance type for compute resource 1 in queue1 [t2.micro]: hpc7g.4xlarge
+```
 
-# Enable EFA to run applications that require high levels of inter-instance
+Enable EFA to run applications that require high levels of inter-instance
 communication at scale on AWS at no additional charge
 
+```
 Enable EFA on hpc7g.4xlarge (y/n) [y]: y
 Maximum instance count [10]: 10
 Placement Group name []:
+```
 
-# After the previous steps are completed, decide whether to use an existing VPC or
+After the previous steps are completed, decide whether to use an existing VPC or
 let AWS ParallelCluster create a VPC for you. If you don't have a properly configured VPC,
 AWS ParallelCluster can create a new one for you.
 
+```
 Automate VPC creation? (y/n) [n]: y
 Allowed values for Availability Zone:
 1. us-east-1a
@@ -184,22 +203,27 @@ Allowed values for Network Configuration:
 2. Head node and compute fleet in the same public subnet
 Network Configuration [Head node in a public subnet and compute fleet in a private subnet]: 1
 Beginning VPC creation. Please do not leave the terminal until the creation is finalized
+```
 
-# Subnet creation
-
+Subnet creation
+```
 Automate Subnet creation? (y/n) [y]: y
 
 Creating CloudFormation stack...
 Do not leave the terminal until the process has finished
+```
 
-$ pcluster create-cluster --cluster-name test-cluster --cluster-configuration cluster-config.yaml
+Check the status of the cluster creation.
+
+```
+$ pcluster create-cluster --cluster-name my-test-cluster --cluster-configuration my-config-file.yaml
 {
   "cluster": {
-    "clusterName": "test-cluster",
+    "clusterName": "my-test-cluster",
     "cloudformationStackStatus": "CREATE_IN_PROGRESS",
     "cloudformationStackArn": "arn:aws:cloudformation:eu-west-1:xxx:stack/test-cluster/abcdef0-f678-890a-5abc-021345abcdef",
     "region": "eu-west-1",
-    "version": "3.7.0",
+    "version": "3.8.0",
     "clusterStatus": "CREATE_IN_PROGRESS"
   },
   "validationMessages": []
