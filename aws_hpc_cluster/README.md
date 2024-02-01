@@ -223,7 +223,7 @@ $ pcluster create-cluster --cluster-name my-test-cluster --cluster-configuration
   "cluster": {
     "clusterName": "my-test-cluster",
     "cloudformationStackStatus": "CREATE_IN_PROGRESS",
-    "cloudformationStackArn": "arn:aws:cloudformation:eu-west-1:xxx:stack/test-cluster/abcdef0-f678-890a-5abc-021345abcdef",
+    "cloudformationStackArn": "arn:aws:cloudformation:eu-west-1:xxx:stack/test-cluster/abcdef0-f678-890ac-021345cdef",
     "region": "eu-west-1",
     "version": "3.8.0",
     "clusterStatus": "CREATE_IN_PROGRESS"
@@ -233,22 +233,15 @@ $ pcluster create-cluster --cluster-name my-test-cluster --cluster-configuration
 
 ```
 
-We have provided a sample config file (**sample-config-file.yml**) to create a simple cluster with one head node, and . You would need to change a few fields, specific to your credentials. Change the following fields in sample-config-file.yml.
+After successful completion of the above step, an yaml file my-config-file.yaml will be automatically saved in the current directory on your local machine. This file can be reused to create an AWS HPC cluster of the same configuration on demand. 
 
 ```
-Networking:
-    SubnetId: **subnet-06c72b747bd512c00**
-
-Ssh:
-    KeyName: **poc-hpc-cluster**
-
-SubnetIds:
-      - **subnet-003546501b9666644**
+$ pcluster create-cluster --cluster-configuration my-config-file.yml --cluster-name <cluster-name> --region us-east-1
 ```
 
-```
-# Create a simple cluster
+Additionally, we have provided a sample config file (**sample-config-file.yml**) to create a simple cluster with one head node, and . You would need to change a few fields, specific to your credentials. Change the following fields in sample-config-file.yml, SubnetId: **subnet-06c72b747bd512c00**, Ssh: KeyName: **poc-hpc-cluster** and SubnetIds: - **subnet-003546501b9666644**.
 
+```
 $ pcluster create-cluster --cluster-configuration sample-config-file.yml --cluster-name bii-hpc-cluster --region us-east-1
 
 # Check the status of the cluster
