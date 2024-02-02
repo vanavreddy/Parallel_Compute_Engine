@@ -1,4 +1,4 @@
-# Ssetup a HPC cluster on Amazon AWS and run the modeling pipeline on the AWS cluster.
+# Setup a HPC cluster on Amazon AWS and run the modeling pipeline on the AWS cluster.
 
 You will need an AWS account, preferably one setup through UVA ITS folks. 
 Once the account is ready,  make sure you can login and that you have 
