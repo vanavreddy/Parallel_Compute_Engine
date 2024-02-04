@@ -30,12 +30,14 @@ in their home directory on every compute cluster.
     
     $ cd ~
     $ wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
-    $ sh ./Miniconda3-latest-Linux-x86_64.sh
+    $ bash ./Miniconda3-latest-Linux-x86_64.sh
     
-    # Follow the prompts
+    # Follow the prompts. When asked "Do you wish to update your shell profile
+    to automatically initialize conda?" Choose "yes".
    ```
 
 Once setup is done, please ensure that your conda config contains the following:
+
    ```
     # cat ~/.condarc
  
@@ -46,7 +48,7 @@ Once setup is done, please ensure that your conda config contains the following:
       auto_activate_base: false
    ```
 If the file is not created during install, create the file, copy the above text and 
-paste it in ~/.condarc file.
+paste it in ~/.condarc file. 
 
 This pipeline assumes Python 3.11. Conda version < 4.11 may have issues with 
 Python 3.11. Ensure that you have Conda version 4.11+ once installed.
@@ -68,7 +70,8 @@ and fzf in the Python environment.
 
    ```
     # Create the Conda environments
-     
+
+    $ cd Unified_Epihiper_Pipeline_Setup
     $ conda env create -f conda_env_files/py_env.yml
     $ conda env create -f conda_env_files/r_env.yml
     $ conda env create -f conda_env_files/node_env.yml
