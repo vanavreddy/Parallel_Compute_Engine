@@ -34,9 +34,10 @@ in their home directory on every compute cluster.
     
     # Follow the prompts
    ```
+
 Once setup is done, please ensure that your conda config contains the following:
    ```
-    # ~/.condarc
+    # cat ~/.condarc
  
       channels:
         - conda-forge
@@ -44,10 +45,11 @@ Once setup is done, please ensure that your conda config contains the following:
       anaconda_upload: false
       auto_activate_base: false
    ```
+If the file is not created during install, create the file, copy the above text and 
+paste it in ~/.condarc file.
 
-This pipeline assumes we will be using Python 3.11.
-Conda version < 4.11 have issues with Python 3.11.
-Please ensure that you have Conda version 4.11+ once installed.
+This pipeline assumes Python 3.11. Conda version < 4.11 may have issues with 
+Python 3.11. Ensure that you have Conda version 4.11+ once installed.
 
    ```
     $ conda --version
@@ -67,32 +69,32 @@ and fzf in the Python environment.
    ```
     # Create the Conda environments
      
-    conda env create -f conda_env_files/py_env.yml
-    conda env create -f conda_env_files/r_env.yml
-    conda env create -f conda_env_files/node_env.yml
-    conda env create -f conda_env_files/pg_env.yml
+    $ conda env create -f conda_env_files/py_env.yml
+    $ conda env create -f conda_env_files/r_env.yml
+    $ conda env create -f conda_env_files/node_env.yml
+    $ conda env create -f conda_env_files/pg_env.yml
      
     # Install pedantic version 1.10
      
-    conda activate py_env
-    pip install -U pydantic==1.10
-    conda deactivate
+    $ conda activate py_env
+    $ pip install -U pydantic==1.10
+    $ conda deactivate
      
     # Install R dependencies in R_env (this step may take a few minutes)
      
-    conda activate r_env
-    Rscript -e 'install.packages(c("R.utils", "data.table", "EpiEstim", "jsonlite", "bit64"), repos="http://cran.r-project.org")'
-    conda deactivate
+    $ conda activate r_env
+    $ Rscript -e 'install.packages(c("R.utils", "data.table", "EpiEstim", "jsonlite", "bit64"), repos="http://cran.r-project.org")'
+    $ conda deactivate
      
     # Install Node dependencies in node_env
   
-    conda activate node_env
-    npm install -g  @shoops/epi-hiper-validator
-    conda deactivate
+    $ conda activate node_env
+    $ npm install -g  @shoops/epi-hiper-validator
+    $ conda deactivate
   
     # Install FZF fuzzy finder in the base conda environment
   
-    conda install -n base fzf
+    $ conda install -n base fzf
    ```
 
 ## 2. Set up the Environment file
@@ -250,11 +252,8 @@ the following steps (replace <cluster_name> with rivanna, anvil or bridges).
   # change the environment.sh file to reflect file system paths on that specific cluster
   
   $ . environment.sh
-  
   $ cd epihiper-setup-utils
-  
   $ conda activate py_env
-  
   $ ./pipeline_main.sh
   
   # Runing this script displays options from which you can select to run different
