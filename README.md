@@ -10,7 +10,7 @@ There are multiple steps to setup different parts of the pipeline.
 4. Partition the Networks
 5. Start the Pipeline
 
-\* One may not need to execute all the steps every time. The list above shows steps for for 
+\* We may NOT need to execute all the steps every time. The list above shows steps for for 
 first time setup. 
 
 ## 1. Set up the Conda environment
