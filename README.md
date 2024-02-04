@@ -2,15 +2,16 @@
 
 Utilities for setting up and running EpiHiper.
 
-There are multiple steps to setup different parts of the pipeline. One may not 
-need to execute all the steps every time. The list below shows steps for for 
-first time setup.
+There are multiple steps to setup different parts of the pipeline.  
 
 1. Set up the Conda environment
 2. Set up the Environment File
 3. Install epihiper_setup_utils and mackenzie
 4. Partition the Networks
 5. Start the Pipeline
+
+\* One may not need to execute all the steps every time. The list above shows steps for for 
+first time setup. 
 
 ## 1. Set up the Conda environment
 
