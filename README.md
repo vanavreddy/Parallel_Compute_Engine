@@ -94,17 +94,18 @@ and fzf in the Python environment.
     $ conda activate node_env
     $ npm install -g  @shoops/epi-hiper-validator
     $ conda deactivate
-  
-    # Install FZF fuzzy finder in the base conda environment
-  
-    $ conda install -n base fzf
    ```
 
 ## 2. Set up the Environment file
 
-On the top level of the directory, change the environment.sh file to reflect the local paths and slurm condiguration specific for that cluster, e.g., rivanna or anvil. The changes may also include conda paths, path to pipeline cache directory and calibration setup files.
+On the top level of the directory, change the environment.sh file to reflect 
+the local paths and slurm condiguration specific for that cluster, e.g., rivanna or anvil.
+The changes may also include conda paths, path to pipeline cache 
+directory and calibration setup files.
 
-We have provided template environment files for specific clusters in the cluster_template_files directory. Copy the appropriate files to the top level and make changes as needed.
+We have provided template environment files for specific clusters in the 
+cluster_template_files directory. Copy the appropriate files to the top 
+level and make changes as needed.
 
 ## 3. Install epihiper_setup_utils and mackenzie 
 
@@ -114,6 +115,7 @@ Install epihiper_setup_utils,
    $ conda activate py_env
    $ cd epihiper_setup_utils
    $ pip install -U -e .
+   $ cd ../
   ```
 
 Now, install the components in MacKenzie directory,
@@ -128,34 +130,38 @@ Now, install the components in MacKenzie directory,
 
 We need to define pipeline cache directory on each cluster.
 This directory must store:
-the EpiHiper source and build directories,
-the partitioned synthetic contact networks,
-and persontrait PostgreSQL database directories.
+1) EpiHiper source and build directories,
+2) partitioned synthetic contact networks,
+3) persontrait PostgreSQL database directories.
 
-Note that PostgreSQL required the database directory
-and all the files underneath it
-are owned by the same user as the one running the PostgreSQL process.
+**Note: PostgreSQL requires the database directory
+and all the files in that directory
+are owned by the user running the PostgreSQL process.**
 
    ```
-    # On Rivanna
+    # On Rivanna, the shared PIPELINE_CACHE directory is located at
     $ export PIPELINE_CACHE=/project/bii_nssac/COVID-19_USA_EpiHiper/pipeline_cache
     
-    # On Anvil
+    # On Anvil, the shared PIPELINE_CACHE directory is located at
     $ export PIPELINE_CACHE=$PROJECT/pipeline_cache
    ```
+If you do not have permissions to access the files or directories in this path,
+contact the group/owner of those direcoties.
+
+Additionally, you can also create you own copy of the PIPELINE_CACHE and 
+export the new location instead.
 
 ### 3.2 Compiling EpiHiper
 
-We compile EpiHiper on every cluster
-with the cluster's optimized compiler and MPI implementation.
-EpiHiper is compiled with MPI and without OpenMP.
-We also create two builds of EpiHiper one with location ID support
-and one without location ID support.
-When running simulations using the detailed populations of the 50 US states
-we use the build with location ID support.
-When running simulations using the coarse populations
-we use the build without location ID support.
-These are due to the differences in the underlying synthetic populations.
+We compile EpiHiper on every cluster with the cluster's optimized 
+compiler and MPI implementation. EpiHiper is compiled with MPI and 
+without OpenMP. We create two builds of EpiHiper, one with 
+location ID support and one without location ID support. 
+
+When running simulations using the detailed populations of the 50 US 
+states, we use the build with location ID support. When running simulations 
+using the coarse populations, we use the build without location ID support. 
+This is to accomodate the differences in the underlying synthetic populations.
 
 #### Compiling EpiHiper on Rivanna
 
@@ -168,31 +174,30 @@ On Rivanna we use the cluster's CMake and PostgreSQL libraries.
 
   # Clone the EpiHiper-code and update the submodules
   $ cd $PIPELINE_CACHE
-  $ git clone git@github.com:NSSAC/EpiHiper-code.git
+  $ git clone https://github.com/NSSAC/EpiHiper-code.git
   $ cd EpiHiper-code
   $ git submodule update --init
 
-  # Allocate a node to compile stuff
-  $ srun -A nssac_covid19 -p bii --nodes 1 --ntasks-per-node 1 --cpus-per-task 40 -W 0 --time 2:00:00 --pty $SHELL
+  # Allocate a node to compile Epihipe code (this is an interactive session)
+  $ srun -A nssac_covid19 -p bii --nodes 1 --ntasks-per-node 1 --cpus-per-task 37 -W 0 --time 2:00:00 --pty $SHELL
 
   # Load the required modules
-  $ module load git/2.4.1 intel/18.0 intelmpi/18.0 cmake/3.12.3 python/3.6.6
-  $ export CC=icc
-  $ export CXX=icpc
+  $ module intel/18.0 intelmpi/18.0
 
   # Create the build with location ID
-
   $ mkdir $PIPELINE_CACHE/EpiHiper-code/build-openmpi-gcc-with-lid
   $ cd $PIPELINE_CACHE/EpiHiper-code/build-openmpi-gcc-with-lid
   $ cmake .. -DENABLE_LOCATION_ID=ON -DENABLE_MPI=ON -DENABLE_OMP=OFF -DCMAKE_BUILD_TYPE=Release
   $ make -j 64
 
   # Create the build with location ID
-
   $ mkdir $PIPELINE_CACHE/EpiHiper-code/build-openmpi-gcc-without-lid
   $ cd $PIPELINE_CACHE/EpiHiper-code/build-openmpi-gcc-without-lid
   $ cmake .. -DENABLE_LOCATION_ID=OFF -DENABLE_MPI=ON -DENABLE_OMP=OFF -DCMAKE_BUILD_TYPE=Release
   $ make -j 64
+
+  # Once compilation is complete, exit the interactive session to get back to head/login node
+  $ exit
 ```
 
 #### Compiling EpiHiper on Anvil
@@ -233,30 +238,38 @@ so that cmake can find the conda environment's postgres installation.
   $ cd $PIPELINE_CACHE/EpiHiper-code/build-openmpi-gcc-without-lid
   $ cmake .. -DENABLE_LOCATION_ID=OFF -DENABLE_MPI=ON -DENABLE_OMP=OFF -DCMAKE_BUILD_TYPE=Release
   $ make -j 64
+
+  # Once compilation is complete, exit the interactive session to get back to head/login node
+
+  $ exit
 ```
 
 ## 4. Partitioning the networks
 ```
-  # Modify the environment.sh file such that SYNPOP_ROOT and FZF_CMD
+  # Modify the environment.sh file such that CACHE_ROOT, SYNPOP_ROOT, CODE_DIR, LOG_DIR and conda envs
  point to the correct filesystem paths on that cluster.
 
+  $ cd Unified_Epihiper_Pipeline_Setup
   $ . environment.sh
   $ cd synpop_partition
   $ conda activate py_env
   $ python make_partitions.py
 ```
+This may take several minutes for all the jobs to finish. To check the status of the slurm jobs, 
+run 'squeue -u $USER' command.
 
 ## 5. Start the pipeline
 
-Once this step finishes, cd back to epihiper-setup-utils and execute 
+Once the partition step finishes, cd back to epihiper-setup-utils and execute 
 the following steps (replace <cluster_name> with rivanna, anvil or bridges).
 
 ```
   # change the environment.sh file to reflect file system paths on that specific cluster
-  
+
+  $ cd Unified_Epihiper_Pipeline_Setup
+  $ conda activate py_env
   $ . environment.sh
   $ cd epihiper-setup-utils
-  $ conda activate py_env
   $ ./pipeline_main.sh
   
   # Runing this script displays options from which you can select to run different
@@ -269,5 +282,4 @@ the following steps (replace <cluster_name> with rivanna, anvil or bridges).
   # 4) submit_agent -> This will start the agent. This step must be executed only after controller is started up.
   # 5) add_setup ->
   # 6) submit_bots_task_source -> this will start up bot which pulls ready tasks to execute on compute nodes
-
 ```
