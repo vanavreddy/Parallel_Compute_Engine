@@ -5,13 +5,14 @@ PIPELINE_SBATCH_ARGS="--account nssac_covid19"
 
 MAX_FAILS=5
 MAX_RUNTIME="3:00:00"
-TASK_TIMEOUT=75600
-MAX_COMPUTE_NODES=100
+TASK_TIMEOUT=54000
+MAX_COMPUTE_NODES=50
 CPU_PER_NODE=37
 CPU_PER_TASK=1
 
 # Env variables for make_partitions
 CODE_DIR="${PWD}"
+LOG_DIR="${HOME}/logs"
 PYTHONPATH="${CODE_DIR}/py_modules"
 
 POSTGRES_CONFIG="${CODE_DIR}/postgres_config/postgresql.${CLUSTER}.conf"
@@ -48,7 +49,7 @@ EPIHIPER_BIN_DIR="${CACHE_ROOT}/EpiHiper-code/build-openmpi-gcc-with-lid/src"
 DBHOST_IP_FILE="${DB_CACHE_DIR}/dbhost_ip.txt"
 EPIHIPER_LOG_LEVEL="warn"
 
-FZF_CMD="$HOME/miniconda3/envs/py_env/bin/fzf"
+FZF_CMD="${HOME}/miniconda3/envs/py_env/bin/fzf"
 
 # Env variables for setup_utils
 EXPERIMENT="2023-12-05"
@@ -62,6 +63,4 @@ FZF_CMD="${HOME}/miniconda3/envs/py_env/bin/fzf"
 
 MULTIPLIER=16
 PIPELINE_TASKS=4
-
-GLOBUS_EXE="${PY_CONDA_ENV}/bin/globus"
 

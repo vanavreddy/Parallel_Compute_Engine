@@ -66,7 +66,6 @@ def main():
             env = os.environ | env
 
             run(cmd, env=env, capture_output=False, check=True)
-            exit()
 
 if __name__ == "__main__":
     main()

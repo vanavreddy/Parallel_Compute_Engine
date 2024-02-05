@@ -96,7 +96,7 @@ cmd_submit_controller () {
     set -x
 
     sbatch $PIPELINE_SBATCH_ARGS \
-        --job-name mackenzie:controller \
+        --job-name controller \
         --nodes 1 \
         --ntasks-per-node 1 \
         --cpus-per-task 2 \
@@ -128,7 +128,7 @@ cmd_submit_agent () {
     set -x
 
     sbatch $PIPELINE_SBATCH_ARGS \
-        --job-name epihiper-pipeline:mackenzie-agent \
+        --job-name agent \
         --nodes 1 \
         --ntasks-per-node 1 \
         --cpus-per-task 2 \
@@ -221,7 +221,7 @@ cmd_submit_bots_task_source () {
     set -x
 
     sbatch $PIPELINE_SBATCH_ARGS \
-        --job-name epihiper-pipeline:bots-task-source \
+        --job-name bots-task \
         --nodes 1 \
         --ntasks-per-node 1 \
         --cpus-per-task 2 \
