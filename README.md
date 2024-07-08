@@ -77,7 +77,7 @@ and fzf in the Python environment.
     $ conda env create -f conda_env_files/node_env.yml
     $ conda env create -f conda_env_files/pg_env.yml
      
-    # Install pedantic version 1.10
+    # Install pydantic version 1.10
      
     $ conda activate py_env
     $ pip install -U pydantic==1.10
@@ -269,7 +269,7 @@ the following steps (replace <cluster_name> with rivanna, anvil or bridges).
   $ cd Unified_Epihiper_Pipeline_Setup
   $ conda activate py_env
   $ . environment.sh
-  $ cd epihiper-setup-utils
+  $ cd epihiper_setup_utils
   $ ./pipeline_main.sh
   
   # Runing this script displays options from which you can select to run different
