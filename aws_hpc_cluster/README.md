@@ -57,6 +57,12 @@ $ chmod ug+x ~/.nvm/nvm.sh
 $ source ~/.nvm/nvm.sh
 $ nvm install --lts
 $ node --version
+v20.15.1
+```
+
+Install AWS ParallelCluster packages
+```
+$ pip install --upgrade aws-parallelcluster
 ```
 
 Verify that AWS ParallelCluster is installed correctly.
@@ -64,14 +70,14 @@ Verify that AWS ParallelCluster is installed correctly.
 ```
 $ pcluster version
 {
-  "version": "3.8.0"
+  "version": "3.10.1"
 }
 ```
 
 To upgrade to the latest version of AWS ParallelCluster, run the installation command again.
 
 ```
-$ pip install --upgrade "aws-parallelcluster"
+$ pip install --upgrade aws-parallelcluster
 ```
 
 Install the AWS Command Line Interface tools.
