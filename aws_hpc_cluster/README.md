@@ -336,5 +336,5 @@ $ sudo apt-get -y update
 $ sudo apt-get install libpq-dev postgresql-server-dev-all
 $ sudo apt-get install -y libpq5
 ```
-To compile and run EpiHipe code, follow the instructions <a href=https://github.com/NSSAC/EpiHiper-code>here</a>.
+To compile and run EpiHiper code, follow the instructions <a href=https://github.com/NSSAC/EpiHiper-code>here</a>.
 
