@@ -34,6 +34,8 @@ in their home directory on every compute cluster.
     
     # Follow the prompts. When asked "Do you wish to update your shell profile
     to automatically initialize conda?" Choose "yes".
+
+    # For ARM architecture, download the installer from <a href=https://repo.anaconda.com/archive/Anaconda3-2024.06-1-Linux-aarch64.sh>here</a>.
    ```
 
 Once setup is done, please ensure that your conda config contains the following:
