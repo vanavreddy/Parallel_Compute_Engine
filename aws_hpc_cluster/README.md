@@ -273,7 +273,7 @@ $ pcluster create-cluster --cluster-configuration my-config-file.yml --cluster-n
 # This step may take several minutes to finish.
 ```
 
-Additionally, we have provided a sample config file (**sample-config-file.yml**) to create a simple cluster with one head node, and . You would need to change a few fields, specific to your credentials. Change the following fields in sample-config-file.yml, SubnetId: **subnet-06c72b747bd512c00**, Ssh: KeyName: **poc-hpc-cluster** and SubnetIds: - **subnet-003546501b9666644**.
+The sample config file (**sample-config-file.yml**) can be used to create a simple cluster with one head node two compute nodes. Change the following fields to your specific AWS account information in sample-config-file.yml, SubnetId: **subnet-06c72b747bd512c00**, Ssh: KeyName: **poc-hpc-cluster** and SubnetIds: - **subnet-003546501b9666644**.
 
 ```
 $ pcluster create-cluster --cluster-configuration sample-config-file.yml --cluster-name bii-hpc-cluster --region us-east-1
