@@ -276,24 +276,59 @@ $ pcluster create-cluster --cluster-configuration my-config-file.yml --cluster-n
 The sample config file (**sample-config-file.yml**) can be used to create a simple cluster with one head node two compute nodes. Change the following fields to your specific AWS account information in sample-config-file.yml, SubnetId: **subnet-06c72b747bd512c00**, Ssh: KeyName: **poc-hpc-cluster** and SubnetIds: - **subnet-003546501b9666644**.
 
 ```
-$ pcluster create-cluster --cluster-configuration sample-config-file.yml --cluster-name bii-hpc-cluster --region us-east-1
-
 # Check the status of the cluster
 
 $ pcluster describe-cluster --cluster-name bii-hpc-cluster
+
+{
+  "creationTime": "2024-07-16T14:17:22.137Z",
+  "headNode": {
+    "launchTime": "2024-07-16T14:21:45.000Z",
+    "instanceId": "i-01b7dcbecd4e7ce21",
+    "publicIpAddress": "54.146.6.144",
+    "instanceType": "hpc7g.4xlarge",
+    "state": "running",
+    "privateIpAddress": "10.0.0.99"
+  },
+  "version": "3.10.1",
+  "clusterConfiguration": {
+    "url": "<LONG TEXT .. skipping>"
+  },
+  "tags": [
+    {
+      "value": "3.10.1",
+      "key": "parallelcluster:version"
+    },
+    {
+      "value": "bii-hpc-cluster",
+      "key": "parallelcluster:cluster-name"
+    }
+  ],
+  "cloudFormationStackStatus": "CREATE_IN_PROGRESS",
+  "clusterName": "bii-hpc-cluster",
+  "computeFleetStatus": "UNKNOWN",
+  "cloudformationStackArn": "arn:aws:cloudformation:us-east-1:672627884910:stack/bii-hpc-cluster/1dfb8d60-437e-11ef-9995-124a7a8e995d",
+  "lastUpdatedTime": "2024-07-16T14:17:22.137Z",
+  "region": "us-east-1",
+  "clusterStatus": "CREATE_IN_PROGRESS",
+  "scheduler": {
+    "type": "slurm"
+  }
+}
+
 ```
 
 Once the cluster is created, login to the headnode, you will need youe key-pair information.
 
 ```
-$ ssh --cluster-name bii-hpc-cluster -i <local-path>/key-pair-name.pem
+$ pcluster ssh --cluster-name bii-hpc-cluster -i <local-path>/key-pair-name.pem
 ```
 
  After successful login to head node, install the packages needed to run EpiHiper-Code
 
 ```
 # Clone EpiHiper code from git
-git clone git@github.com:NSSAC/EpiHiper-code.git
+git clone https://github.com/NSSAC/EpiHiper-code.git
 
 # Install required packages
 
@@ -301,4 +336,5 @@ $ sudo apt-get -y update
 $ sudo apt-get install libpq-dev postgresql-server-dev-all
 $ sudo apt-get install -y libpq5
 ```
+To compile and run EpiHipe code, follow the instructions <a href=https://github.com/NSSAC/EpiHiper-code>here</a>.
 
