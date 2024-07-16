@@ -2,7 +2,7 @@
 
 You will need an AWS account, preferably one setup through UVA ITS folks. 
 Once the account is ready,  make sure you can login and that you have 
-AdministrationAccess privileges, e.g., to create and launch instances.
+AdministrationAccess privileges, to create and launch instances.
 
 ## Create key-pair
 
