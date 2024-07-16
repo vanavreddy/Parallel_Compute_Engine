@@ -62,7 +62,7 @@ v20.15.1
 
 Install AWS ParallelCluster packages
 ```
-$ pip install --upgrade aws-parallelcluster
+$ pip install aws-parallelcluster
 ```
 
 Verify that AWS ParallelCluster is installed correctly.
