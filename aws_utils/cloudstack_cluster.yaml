@@ -1,0 +1,76 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: >
+  AWSParallelCluster CloudFormation Template
+
+Parameters:
+  KeyName:
+    Description: KeyPair to login to the head node
+    Type: AWS::EC2::KeyPair::KeyName
+
+  AvailabilityZone:
+    Description: Availability zone where instances will be launched
+    Type: AWS::EC2::AvailabilityZone::Name
+    Default: us-east-1a
+
+  InstanceCount:
+    Description: Number of EC2 instances (must be between 1 and 5).
+    Type: Number
+    Default: 1
+    MinValue: 1
+    MaxValue: 5
+    ConstraintDescription: Must be a number between 1 and 5.
+
+Mappings:
+  ParallelCluster:
+    Constants:
+      Version: 3.10.1
+
+Resources:
+  PclusterClusterProvider:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Sub
+        - https://${AWS::Region}-aws-parallelcluster.s3.${AWS::Region}.${AWS::URLSuffix}/parallelcluster/${Version}/templates/custom_resource/cluster.yaml
+        - { Version: !FindInMap [ParallelCluster, Constants, Version] }
+
+  PclusterVpc:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      Parameters:
+        PublicCIDR: 10.0.0.0/24
+        PrivateCIDR: 10.0.16.0/20
+        AvailabilityZone: !Ref AvailabilityZone
+      TemplateURL: !Sub
+        - https://${AWS::Region}-aws-parallelcluster.s3.${AWS::Region}.${AWS::URLSuffix}/parallelcluster/${Version}/templates/networking/public-private-${Version}.cfn.json
+        - { Version: !FindInMap [ParallelCluster, Constants, Version ] }
+
+  PclusterCluster:
+    Type: Custom::PclusterCluster
+    Properties:
+      ServiceToken: !GetAtt [ PclusterClusterProvider , Outputs.ServiceToken ]
+      ClusterName: !Sub 'c-${AWS::StackName}'
+      ClusterConfiguration:
+        Image:
+          Os: alinux2
+        HeadNode:
+          InstanceType: t2.medium
+          Networking:
+            SubnetId: !GetAtt [ PclusterVpc , Outputs.PublicSubnetId ]
+          Ssh:
+            KeyName: !Ref KeyName
+        Scheduling:
+          Scheduler: slurm
+          SlurmQueues:
+          - Name: queue0
+            ComputeResources:
+            - Name: queue0-cr0
+              InstanceType: t2.micro
+              MinCount: !Ref InstanceCount
+              MaxCount: !Ref InstanceCount
+            Networking:
+              SubnetIds:
+              -  !GetAtt [ PclusterVpc , Outputs.PrivateSubnetId ]
+Outputs:
+  HeadNodeIp:
+    Description: The Public IP address of the HeadNode
+    Value: !GetAtt [ PclusterCluster, headNode.publicIpAddress ]
