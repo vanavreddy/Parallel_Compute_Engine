@@ -82,6 +82,7 @@ and fzf in the Python environment.
      
     $ conda activate py_env
     $ pip install -U pydantic==1.10
+    $ pip install boto3
     $ conda deactivate
      
     # Install R dependencies in R_env (this step may take a few minutes)
