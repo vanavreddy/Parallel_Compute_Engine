@@ -150,10 +150,11 @@ def launch_controller(args):
 
     ssm = boto3.client('ssm')
     instance_info = ssm.describe_instance_information().get('InstanceInformationList', {})[0]
-    cmd10 = 'bash /home/ubuntu/conda_env_setup.sh'
+    cmd1 = 'bash /home/ubuntu/conda_env_setup.sh'
+    cmd2 = 'bash /home/ubuntu/Parallel_Compute_Engine/aws_utils/run_aws_controller.sh'
     response = ssm.send_command(InstanceIds=[instances[0].id],
                             DocumentName='AWS-RunShellScript',
-                            Parameters={"commands":[cmd10]}
+                            Parameters={"commands":[cmd1, cmd2]}
                             )
     command_id = response.get('Command', {}).get("CommandId", None)
     while True:
@@ -176,6 +177,7 @@ def launch_controller(args):
     print("\nTo SSH to the controller instance, use the command below,")
     print("\nssh -i "+AWS_CONFIG_DIR+"/controller_keypair.pem ubuntu@"+ip_address)
     print("\n\n")
+
 
 if __name__ == "__main__":
     # get arguments
