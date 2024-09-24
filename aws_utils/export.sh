@@ -1,4 +1,4 @@
-export PIPELINE_ROOT=~/epihiper-setup-logs/2023-12-05/
+export PIPELINE_ROOT=/home/ubuntu/epihiper-setup-logs/2023-12-05/
 export CONTROLLER_TASK_TIMEOUT="5000000"
 export CONTROLLER_CONTROLLER_PORT=18001
 export CONTROLLER_CERT_FILE="$PIPELINE_ROOT/common.crt"
