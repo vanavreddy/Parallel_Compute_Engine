@@ -1,9 +1,9 @@
-import os
 import argparse
 import boto3
 import sys
 
 def delete_cluster(args):
+    # init cloudformation client
     cf_client = boto3.client('cloudformation')
 
     stack_name = args.stack_name
@@ -25,7 +25,7 @@ def delete_cluster(args):
 if __name__ == "__main__":
     # get arguments
     parser = argparse.ArgumentParser(
-                    prog='aws_cf_delete_cluster.py',
+                    prog='aws_delete_cluster.py',
                     description='Delete a cluster that was created with AWS CloudFormation stack',
                     )
 
