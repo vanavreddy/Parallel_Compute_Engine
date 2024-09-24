@@ -26,4 +26,4 @@ which mackenzie
 ls /home/ubuntu/miniconda3/envs/py_env/bin/mackenzie
 
 #nohup python /home/ubuntu/.local/bin/mackenzie controller 2>&1 | tee -a /home/ubuntu/controller.out &
-nohup python /home/ubuntu/miniconda3/envs/py_env/bin/mackenzie 2>&1 | tee -a /home/ubuntu/controller.out &
+nohup python /home/ubuntu/miniconda3/envs/py_env/bin/mackenzie controller 2>&1 | tee -a /home/ubuntu/controller.out &
