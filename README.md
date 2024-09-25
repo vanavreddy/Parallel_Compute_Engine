@@ -5,15 +5,13 @@ PaCE is a multi-cluster HPC scheduling system used to execute US national-scale 
 2. Multiple HPC clusters with controller in AWS cloud instance
 3. Multiple HPC cluster where the HPC cluster is in AWS cloud along with the controller running on AWS cloud instance.
 
-The the configurations are dipicted in figure below.
+The three configurations are dipicted in figure below.
 
 ![three configs](https://github.com/vanavreddy/Parallel_Compute_Engine/blob/master/three_configs.png?raw=true)
 
-## EpiHiper Setup Utilities
-
 Utilities for setting up and running EpiHiper.
 
-There are multiple steps to setup different parts of the pipeline.  
+These are common steps to setup the pipeline, these steps are executed in all three configurations.  
 
 1. Set up the conda environment
 2. Set up the environment File
@@ -23,6 +21,8 @@ There are multiple steps to setup different parts of the pipeline.
 
 \* You may NOT need to execute all the steps every time. The list above shows steps for 
 first time setup. 
+
+Additional steps specific for a configuration are discussed later.
 
 ## 1. Set up the conda environment
 
@@ -292,7 +292,54 @@ the following steps (replace <cluster_name> with rivanna, anvil or bridges).
   # 1) make_pipeline_root -> This will create the necessary dictories.
   # 2) submit_synpop_db -> This will initialize the SynthPopDB databse.
   # 3) submit_controller -> This will start MacKenzie controller process on a compute node.
-  # 4) submit_agent -> This will start the agent. This step must be executed only after controller is started up.
-  # 5) add_setup ->
-  # 6) submit_bots_task_source -> this will start up bot which pulls ready tasks to execute on compute nodes
+  # 4) start_aws_controller -> this will start an AWS EC2 instance and set the instance to run the controller.
+  # 5) submit_agent -> This will start the agent. This step must be executed only after controller is started up.
+  # 6) add_setup -> copies the required files.
+  # 7) submit_bots_task_source -> this will start up bot which pulls ready tasks to execute on compute nodes.
+```
+
+## Configuration a -> setting up the pipeline on single HPC cluster.
+
+Simply run all the steps, 1 through 5. In step-5, select "submit_controller" option.
+
+## Configuration b -> setting up the pipeline on multiple HPC clusters with controller on AWS cloud.
+
+Run all the steps, 1 through 5 on the headnode on each of the HPC clusters. In step-5, select "start_aws_controller" option.
+
+```
+# For example, after selecting the 'start_aws_controller', you will be promted to SSH to the instance.
+
+ssh -i /home/vv3xu/calibration-bo/2023-12-05/aws_setup_root/controller_keypair.pem ubuntu@54.83.130.78
+
+# The execute the script to start the controller process.
+
+bash /home/ubuntu/Parallel_Compute_Engine/aws_utils/run_aws_controller.sh
+
+```
+
+Once the pipeline tasks complete, make sure you delete the AWS controller instance. 
+
+```
+cd aws_utils
+python delete_resources.py
+```
+
+## Configuration c -> setting up the pipeline on multiple HPC clusters, AWS HPC Cluster and controller on AWS cloud.
+
+First, create HPC cluster on AWS resources using CloudFormation stack.
+
+```
+cd aws_utils
+python aws_create_cluster.py --key_name <name of the keypair> --stack_name <name of your choice> --instance_count <number of compute nodes>
+```
+
+SSH to headnode of the newly created HPC cluster on AWS resources. Run all the steps, 1 through 5 on the headnode of each of the HPC clusters. In step-5, select "start_aws_controller" option. Once the controller instance is ready, SSH to the AWS  controller installer and start the controller script. 
+
+Once the pipeline tasks complete, make sure you delete the AWS HPC cluster and AWS controller instance. 
+
+```
+cd aws_utils
+python delete_resources.py
+
+python aws_delete_cluster.py
 ```
