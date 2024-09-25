@@ -1,19 +1,21 @@
 # EpiHiper Setup Utilities
 
+![three configs]([https://github.com/vanavreddy/Parallel_Compute_Engine/blob/master/three_configs.png])
+
 Utilities for setting up and running EpiHiper.
 
 There are multiple steps to setup different parts of the pipeline.  
 
-1. Set up the Conda environment
-2. Set up the Environment File
+1. Set up the conda environment
+2. Set up the environment File
 3. Install epihiper_setup_utils and mackenzie
-4. Partition the Networks
-5. Start the Pipeline
+4. Partition the networks
+5. Start the pipeline
 
-\* We may NOT need to execute all the steps every time. The list above shows steps for for 
+\* You may NOT need to execute all the steps every time. The list above shows steps for 
 first time setup. 
 
-## 1. Set up the Conda environment
+## 1. Set up the conda environment
 
 We use Conda for managing software dependencies
 other than EpiHiper, C++ compilers, and MPI implementations.
