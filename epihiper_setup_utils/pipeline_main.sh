@@ -36,10 +36,13 @@ cmd_make_pipeline_root () {
     mkdir "$PIPELINE_ROOT/csmts_work_dir"
     mkdir "$PIPELINE_ROOT/bots_work_dir"
     mkdir "$PIPELINE_ROOT/logs"
+    mkdir "$PIPELINE_ROOT/aws_setup_root"
 
     cd "$PIPELINE_ROOT"
 
     "$PY_CONDA_ENV/bin/mackenzie" makecert common
+    cp $PIPELINE_ROOT/common.* $PIPELINE_ROOT/aws_setup_root/
+    cp $AWS_PEM_KEY $PIPELINE_ROOT/aws_setup_root/
 }
 
 cmd_run_synpop_db () {
@@ -105,6 +108,20 @@ cmd_submit_controller () {
         --output "$PIPELINE_ROOT/logs/%x-%j.out" \
         "$CUR_SCRIPT" run_controller
 }
+
+cmd_start_aws_controller () {
+    set -Eeuo pipefail
+    set -x
+
+    export AWS_KEYNAME="$AWS_KEYNAME"
+    export AMI_ID="$AMI_ID"
+    export INSTANCE_TYPE="$CONTROLLER_INSTANCE_TYPE"
+    export VOL_SIZE="$EBS_VOL_SIZE"
+    python ../aws_utils/launch_controller_instance.py --key_name $AWS_KEYNAME --ami $AMI_ID \
+	    --instance_type $INSTANCE_TYPE --vol_size $VOL_SIZE
+
+}
+
 
 cmd_run_agent () {
     set -Eeuo pipefail
@@ -277,6 +294,7 @@ read -r -d '' SUBCOMMANDS <<'EOF'
 make_pipeline_root
 submit_synpop_db
 submit_controller
+start_aws_controller
 submit_agent
 add_setup
 submit_csm_task_source

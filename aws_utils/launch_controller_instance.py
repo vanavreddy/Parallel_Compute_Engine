@@ -2,6 +2,7 @@ import boto3
 import time
 import os
 import sys
+import click
 import argparse
 from pathlib import Path
 from dotenv import load_dotenv
@@ -90,10 +91,20 @@ def create_security_group(ec2, vpc):
 
     return sec_group
 
-def create_instance(ec2, subnet, sec_group):
+def create_instance(ec2, subnet, sec_group, args):
+
+    # get IAM role
+    iam_client = boto3.client('iam')
+
+    iam_response = iam_client.get_instance_profile(
+        InstanceProfileName='ec2-ssm-role'
+    )
+    iam_arn = iam_response['InstanceProfile']['Roles'][0]['Arn']
+    iam_arn = iam_arn.replace(':role', ':instance-profile')
+
     # Create instance
     instances = ec2.create_instances(
-        ImageId='ami-0c7217cdde317cfec', InstanceType='t2.large', MaxCount=1, MinCount=1, KeyName='controller_keypair',
+        ImageId=args.ami, InstanceType=args.instance_type, MaxCount=1, MinCount=1, KeyName=args.key_name,
         NetworkInterfaces=[
             {   'SubnetId': subnet.id, 
                 'DeviceIndex': 0, 
@@ -103,15 +114,15 @@ def create_instance(ec2, subnet, sec_group):
         ],
         BlockDeviceMappings=[
             {   "DeviceName": "/dev/xvda", 
-                "Ebs" : { "VolumeSize" : 500 }
+                "Ebs" : { "VolumeSize" : int(args.vol_size) }
             }
         ],
         IamInstanceProfile={
-            'Arn': 'arn:aws:iam::672627884910:instance-profile/ec2-ssm-role',
+            'Arn': iam_arn,
         },
     )
     instances[0].wait_until_running()
-    print(f"Creating instance...")
+    print(f"Creating controller instance...")
     time.sleep(100)
     instances[0].reload()
 
@@ -143,10 +154,8 @@ def launch_controller(args):
         ig = create_internet_gateway(ec2, vpc)
         f.write('igw_id:'+ig.id+'\n')
 
-
         route_table = create_routing_table(vpc, ig)
         f.write('rtb_id:'+route_table.id+'\n')
-
 
         subnet = create_subnet(ec2, vpc, route_table)
         f.write('subnet_id:'+subnet.id+'\n')
@@ -154,8 +163,7 @@ def launch_controller(args):
         sec_group = create_security_group(ec2, vpc)
         f.write('sec_group_id:'+sec_group.id+'\n')
 
-
-        instance = create_instance(ec2, subnet, sec_group)
+        instance = create_instance(ec2, subnet, sec_group, args)
         f.write('instance_id:'+instance.id)
 
     # save the public ip address to connect later
@@ -163,37 +171,22 @@ def launch_controller(args):
     with open(PIPELINE_ROOT+'/controller_ip.txt', 'w+') as f1:
         f1.write(ip_address+'\n')
 
+    print("Copying certs to the controller instance...")
     # copy keypar to the instance
     scpCommand = "scp -i "+AWS_CONFIG_DIR+"/controller_keypair.pem -o StrictHostKeyChecking=no "+AWS_CONFIG_DIR+"/common.* ubuntu@"+ip_address+":/home/ubuntu/"
     os.system(scpCommand)
 
-    '''
-    # read contents of the controller setup file
-    controller_contents = ''
-    with open('../aws_utils/aws_controller_setup.sh', 'r') as f:
-        controller_contents = f.read()
-
-    # read contents of the setup file
-    conda_contents = ''
-    with open('../aws_utils/conda_env_setup.sh', 'r') as f:
-        conda_contents = f.read()
-
-    file_name = '../aws_utils/aws_controller_setup.sh'
-    scpCommand = "scp -i "+AWS_CONFIG_DIR+"/controller_keypair.pem -o StrictHostKeyChecking=no "+file_name+" ubuntu@"+ip_address+":/home/ubuntu/"
-    os.system(scpCommand)
     file_name = '../aws_utils/conda_env_setup.sh'
     scpCommand = "scp -i "+AWS_CONFIG_DIR+"/controller_keypair.pem -o StrictHostKeyChecking=no "+file_name+" ubuntu@"+ip_address+":/home/ubuntu/"
     os.system(scpCommand)
-    '''
 
-    print("Setting up the conda environment in the new controller instance...")
-
+    print("Setting up conda environment in the newly created controller instance...")
     # run conda setup script on the newly created instance
     ssm = boto3.client('ssm')
     instance_info = ssm.describe_instance_information().get('InstanceInformationList', {})[0]
-    cmd1 = 'bash /home/ubuntu/Parallel_Compute_Engine/aws_utils/conda_env_setup.sh'
+    cmd1 = 'bash /home/ubuntu/conda_env_setup.sh'
     #cmd2 = 'bash /home/ubuntu/Parallel_Compute_Engine/aws_utils/run_aws_controller.sh'
-    response = ssm.send_command(InstanceIds=[instances[0].id],
+    response = ssm.send_command(InstanceIds=[instance.id],
                             DocumentName='AWS-RunShellScript',
                             #Parameters={"commands":[cmd1, cmd2]}
                             Parameters={"commands":[cmd1]}
@@ -216,11 +209,11 @@ def launch_controller(args):
     output = command_plugin['Output']
     print(f"Completed running SSM command, output: {output}\n")
 
-    print("Next Step: Login to the intance and finish setting up the controller.")
-    print("\nTo SSH to the controller instance, use the command below,")
-    print("\nssh -i "+AWS_CONFIG_DIR+"/controller_keypair.pem ubuntu@"+ip_address)
-    print("\n\n")
+    click.secho(f"TODO: Login to the intance and start the controller. Run the following commands...", fg="green")
 
+    print(f"\nLogin to the instance:  ssh -i {AWS_CONFIG_DIR}/controller_keypair.pem ubuntu@{ip_address}")
+    print(f"\nStart Controller:  bash /home/ubuntu/Parallel_Compute_Engine/aws_utils/run_aws_controller.sh")
+    print("\n\n")
 
 if __name__ == "__main__":
     # get arguments
@@ -229,7 +222,10 @@ if __name__ == "__main__":
                     description='Launch controller instance using AWS EC2',
                     )
 
-    parser.add_argument('--key_name', required=False, help='path to Keypair file')
+    parser.add_argument('--key_name', required=False, default='controller_keypair', help='path to Keypair file')
+    parser.add_argument('--ami', required=False, default='ami-0c7217cdde317cfec', help='AMI id')
+    parser.add_argument('--instance_type', required=False, default='t2.large', help='Instance type e.g., t2.large')
+    parser.add_argument('--vol_size', required=False, default=500, help='EBS volume size')
 
     args = parser.parse_args()
 
