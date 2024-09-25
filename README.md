@@ -1,6 +1,6 @@
 # EpiHiper Setup Utilities
 
-![three configs]([https://github.com/vanavreddy/Parallel_Compute_Engine/blob/master/three_configs.png])
+![three configs](https://github.com/vanavreddy/Parallel_Compute_Engine/blob/master/three_configs.png?raw=true)
 
 Utilities for setting up and running EpiHiper.
 
