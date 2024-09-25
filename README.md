@@ -1,6 +1,15 @@
-# EpiHiper Setup Utilities
+# Parallel Compute Engine - PaCE
+
+PaCE is a multi-cluster HPC scheduling system used to execute US national-scale epidemic simulation models. PaCE can be setup in three different configuration. The three configurations are:
+1. Single HPC cluster
+2. Multiple HPC clusters with controller in AWS cloud instance
+3. Multiple HPC cluster where the HPC cluster is in AWS cloud along with the controller running on AWS cloud instance.
+
+The the configurations are dipicted in figure below.
 
 ![three configs](https://github.com/vanavreddy/Parallel_Compute_Engine/blob/master/three_configs.png?raw=true)
+
+## EpiHiper Setup Utilities
 
 Utilities for setting up and running EpiHiper.
 
