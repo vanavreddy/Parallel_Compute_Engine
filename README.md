@@ -298,11 +298,11 @@ the following steps (replace <cluster_name> with rivanna, anvil or bridges).
   # 7) submit_bots_task_source -> this will start up bot which pulls ready tasks to execute on compute nodes.
 ```
 
-## Configuration a -> setting up the pipeline on single HPC cluster.
+## Configuration a: Single HPC cluster.
 
 Simply run all the steps, 1 through 5. In step-5, select "submit_controller" option.
 
-## Configuration b -> setting up the pipeline on multiple HPC clusters with controller on AWS cloud.
+## Configuration b: Multiple HPC clusters with controller in AWS cloud instance.
 
 Run all the steps, 1 through 5 on the headnode on each of the HPC clusters. In step-5, select "start_aws_controller" option.
 
@@ -324,7 +324,7 @@ cd aws_utils
 python delete_resources.py
 ```
 
-## Configuration c -> setting up the pipeline on multiple HPC clusters, AWS HPC Cluster and controller on AWS cloud.
+## Configuration c: Multiple HPC cluster where the HPC cluster is in AWS cloud along with the controller running on AWS cloud instance.
 
 First, create HPC cluster on AWS resources using CloudFormation stack.
 
