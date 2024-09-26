@@ -305,11 +305,11 @@ the following steps (replace <cluster_name> with rivanna, anvil or bridges).
 
 ## Configuration a: Single HPC cluster.
 
-Simply run all the steps, 1 through 5. In step-5, select "submit_controller" option.
+Run all the steps 1 through 5. In step-5, select "submit_controller" option.
 
-## Configuration b: Multiple HPC clusters with controller in AWS cloud instance.
+## Configuration b: Multiple local HPC clusters with the controller on AWS EC2 instance.
 
-Requirements: 
+**Requirements**: 
 
 1. AWS admin account with permissions to create/delete resources.
 2. Create and download a keypair using the steps [here](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/create-key-pairs.html).Make sure you save your .pem file locally.
@@ -381,7 +381,7 @@ $ cd aws_utils
 $ python aws_delete_controller.py
 ```
 
-## Configuration c: Multiple HPC cluster where the HPC cluster is in AWS cloud along with the controller running on AWS cloud instance.
+## Configuration c: Multiple HPC clusters (local and AWS HPC cluster) with the controller running on AWS EC2 instance.
 
 First, create HPC cluster on AWS resources using CloudFormation stack.
 
