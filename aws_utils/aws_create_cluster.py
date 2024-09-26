@@ -44,6 +44,16 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
+    # read in the environment variables
+    dotenv_path = Path('../environment.sh')
+    load_dotenv(dotenv_path=dotenv_path)
+    AWS_CONFIG_DIR = os.environ["PIPELINE_ROOT"]+'/aws_setup_root'
+
+    saved_cofig_file = AWS_CONFIG_DIR+'/saved_config.txt'
+
+    with open(saved_cofig_file, 'w+') as f:
+        f.write('stack_name:'+args.stack_name+'\n')
+
     # create cluster
     create_cluster(args)
 

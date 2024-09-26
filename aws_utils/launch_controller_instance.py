@@ -164,7 +164,9 @@ def launch_controller(args):
         f.write('sec_group_id:'+sec_group.id+'\n')
 
         instance = create_instance(ec2, subnet, sec_group, args)
-        f.write('instance_id:'+instance.id)
+        f.write('instance_id:'+instance.id+'\n')
+
+        f.write('instance_ip_address:'+instance.public_ip_address+'\n')
 
     # save the public ip address to connect later
     ip_address = instance.public_ip_address
