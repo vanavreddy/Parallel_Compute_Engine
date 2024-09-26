@@ -352,7 +352,8 @@ $ pip install awscli
 ```
 
 
-In step-5, select "start_aws_controller" option. 
+In step-5, select "start_aws_controller" option. After the controller instance starts, SSH to the instance and run the controller.
+
 ```
 # For example, after selecting the 'start_aws_controller', you will be promted to SSH to the instance.
 
