@@ -366,7 +366,7 @@ $ bash /home/ubuntu/Parallel_Compute_Engine/aws_utils/run_aws_controller.sh
 ```
 
 Once the pipeline tasks complete, make sure you delete the AWS controller instance. 
-**If you leave the resources running, Amazon will charge for the running resources even if you do not use them. **
+**If you leave the resources running, Amazon will charge for the running resources even if you do not use them.**
 
 ```
 $ cd aws_utils
@@ -389,7 +389,7 @@ $ python aws_create_cluster.py --key_name <name of the keypair> --stack_name <na
 SSH to headnode of the newly created HPC cluster on AWS resources. Run all the steps, 1 through 5 on the headnode of each of the HPC clusters (local and AWS clusters). In step-5, select "start_aws_controller" option. Once the controller instance is ready, SSH to the AWS  controller installer and start the controller script (see configuration b steps).
 
 Once the EpiHiper simulation tasks are completed, make sure you delete the AWS HPC cluster and controller resources. 
-**If you leave the resources running, Amazon will charge for the running resources even if you do not use them. **
+**If you leave the resources running, Amazon will charge for the running resources even if you do not use them.**
 
 ```
 $ cd aws_utils
