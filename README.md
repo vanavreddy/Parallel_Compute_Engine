@@ -308,6 +308,7 @@ Requirements:
 
 1. AWS admin account with permissions to create/delete resources.
 2. Create and download a keypair using the steps [here](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/create-key-pairs.html).Make sure you save your .pem file locally.
+3. Session credentials namely, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_SESSION_TOKEN. Add these entries in the environment.sh file and also export them in your shell. Note: These crenetials expire periodically in which case you need to get new credentials for the session.
   
 
 Run all the steps, 1 through 5 on the headnode on each of the HPC clusters. Additionally, you will need to install the following packages in your py_env created in step-1. 
@@ -386,7 +387,26 @@ $ cd aws_utils
 $ python aws_create_cluster.py --key_name <name of the keypair> --stack_name <name of your choice> --instance_count <number of compute nodes>
 ```
 
-SSH to headnode of the newly created HPC cluster on AWS resources. Run all the steps, 1 through 5 on the headnode of each of the HPC clusters (local and AWS clusters). In step-5, select "start_aws_controller" option. Once the controller instance is ready, SSH to the AWS  controller installer and start the controller script (see configuration b steps).
+SSH to headnode of the newly created HPC cluster on AWS resources. Once the cluster is created, login to the headnode, you will need youe key-pair information.
+
+```
+$ pcluster ssh --cluster-name <cluster-name> -i <local-path>/key-pair-name.pem
+```
+
+ After successful login to head node, install the packages needed to run EpiHiper-Code
+
+```
+# Clone EpiHiper code from git
+git clone https://github.com/NSSAC/EpiHiper-code.git
+
+# Install required packages
+
+$ sudo apt-get -y update
+$ sudo apt-get install libpq-dev postgresql-server-dev-all
+$ sudo apt-get install -y libpq5
+```
+
+Run all the steps, 1 through 5 on the headnode of each of the HPC clusters (local and AWS clusters). In step-5, select "start_aws_controller" option. Once the controller instance is ready, SSH to the AWS  controller installer and start the controller script (see configuration b steps).
 
 Once the EpiHiper simulation tasks are completed, make sure you delete the AWS HPC cluster and controller resources. 
 **If you leave the resources running, Amazon will charge for the running resources even if you do not use them.**
