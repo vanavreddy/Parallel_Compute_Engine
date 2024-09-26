@@ -64,3 +64,13 @@ FZF_CMD="${HOME}/miniconda3/envs/py_env/bin/fzf"
 MULTIPLIER=16
 PIPELINE_TASKS=4
 
+AWS_PEM_KEY=<path_to_keypair.pem>
+AWS_KEYNAME=<keypair_name> # do not include .pem in the end
+AMI_ID='ami-0c7217cdde317cfec'
+CONTROLLER_INSTANCE_TYPE='t2.large'
+EBS_VOL_SIZE=500
+
+# get fresh credentials once they expire
+export AWS_ACCESS_KEY_ID=""
+export AWS_SECRET_ACCESS_KEY=""
+export AWS_SESSION_TOKEN=""
