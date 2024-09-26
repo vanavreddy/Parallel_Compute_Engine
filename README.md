@@ -304,24 +304,71 @@ Simply run all the steps, 1 through 5. In step-5, select "submit_controller" opt
 
 ## Configuration b: Multiple HPC clusters with controller in AWS cloud instance.
 
-Run all the steps, 1 through 5 on the headnode on each of the HPC clusters. In step-5, select "start_aws_controller" option.
+Requirements: 
 
+1. AWS admin account with permissions to create/delete resources.
+2. Create and download a keypair using the steps [here](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/create-key-pairs.html).Make sure you save your .pem file locally.
+  
+
+Run all the steps, 1 through 5 on the headnode on each of the HPC clusters. Additionally, you will need to install the following packages in your py_env created in step-1. 
+
+Install Node Version Manager with the lastest Long-Term Support (TS) Node.js version.
+
+```
+$ conda install conda-forge::nodejs
+
+$ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
+$ chmod ug+x ~/.nvm/nvm.sh
+$ source ~/.nvm/nvm.sh
+$ nvm install --lts
+$ node --version
+v20.15.1
+```
+
+Install AWS ParallelCluster packages
+```
+$ pip install aws-parallelcluster
+```
+
+Verify that AWS ParallelCluster is installed correctly.
+
+```
+$ pcluster version
+{
+  "version": "3.10.1"
+}
+```
+
+To upgrade to the latest version of AWS ParallelCluster, run the installation command again.
+
+```
+$ pip install --upgrade aws-parallelcluster
+```
+
+Install the AWS Command Line Interface tools.
+
+```
+$ pip install awscli
+```
+
+
+In step-5, select "start_aws_controller" option. 
 ```
 # For example, after selecting the 'start_aws_controller', you will be promted to SSH to the instance.
 
-ssh -i /home/vv3xu/calibration-bo/2023-12-05/aws_setup_root/controller_keypair.pem ubuntu@54.83.130.78
+$ ssh -i /home/vv3xu/calibration-bo/2023-12-05/aws_setup_root/controller_keypair.pem ubuntu@54.83.130.78
 
 # The execute the script to start the controller process.
 
-bash /home/ubuntu/Parallel_Compute_Engine/aws_utils/run_aws_controller.sh
+$ bash /home/ubuntu/Parallel_Compute_Engine/aws_utils/run_aws_controller.sh
 
 ```
 
 Once the pipeline tasks complete, make sure you delete the AWS controller instance. 
 
 ```
-cd aws_utils
-python delete_resources.py
+$ cd aws_utils
+$ python aws_delete_controller.py
 ```
 
 ## Configuration c: Multiple HPC cluster where the HPC cluster is in AWS cloud along with the controller running on AWS cloud instance.
@@ -329,8 +376,8 @@ python delete_resources.py
 First, create HPC cluster on AWS resources using CloudFormation stack.
 
 ```
-cd aws_utils
-python aws_create_cluster.py --key_name <name of the keypair> --stack_name <name of your choice> --instance_count <number of compute nodes>
+$ cd aws_utils
+$ python aws_create_cluster.py --key_name <name of the keypair> --stack_name <name of your choice> --instance_count <number of compute nodes>
 ```
 
 SSH to headnode of the newly created HPC cluster on AWS resources. Run all the steps, 1 through 5 on the headnode of each of the HPC clusters. In step-5, select "start_aws_controller" option. Once the controller instance is ready, SSH to the AWS  controller installer and start the controller script. 
@@ -338,8 +385,9 @@ SSH to headnode of the newly created HPC cluster on AWS resources. Run all the s
 Once the pipeline tasks complete, make sure you delete the AWS HPC cluster and AWS controller instance. 
 
 ```
-cd aws_utils
-python delete_resources.py
+$ cd aws_utils
+$ python aws_delete_controller.py
+$ python aws_delete_cluster.py
 
 python aws_delete_cluster.py
 ```
