@@ -2,18 +2,16 @@
 
 PaCE is a multi-cluster HPC scheduling system used to execute US national-scale epidemic simulation models. PaCE can be setup in three different configuration. The three configurations are:
 1. Single HPC cluster
-2. Multiple HPC clusters with controller in AWS cloud instance
-3. Multiple HPC cluster where the HPC cluster is in AWS cloud along with the controller running on AWS cloud instance.
+2. Multiple HPC clusters with the controller on AWS EC2 instance
+3. Multiple HPC clusters (local and AWS HPC cluster) with the controller running on AWS EC2 instance.
 
 The three configurations are dipicted in figure below.
 
 ![three configs](https://github.com/vanavreddy/Parallel_Compute_Engine/blob/master/three_configs.png?raw=true)
 
-Utilities for setting up and running EpiHiper.
-
 These are common steps to setup the pipeline, these steps are executed in all three configurations.  
 
-1. Set up the conda environment (one time setup)
+1. Set up the conda environment 
 2. Set up the environment File
 3. Install epihiper_setup_utils and mackenzie
 4. Partition the networks
@@ -30,6 +28,9 @@ We use Conda for managing software dependencies
 other than EpiHiper, C++ compilers, and MPI implementations.
 In particular, the conda environments are used for
 Python, R, Node.js, PostgreSQL, and Cmake.
+
+This is a one time setup. No need to repeat this step for 
+consecutive runs as long as you are on using same machine.
 
 ### 1.1 Install Miniconda
  
@@ -259,10 +260,13 @@ so that cmake can find the conda environment's postgres installation.
 
 ## 4. Partitioning the networks
 ```
-The U.S synthetic population DB (synpop DB) and contact network files need to be accessible. The user should have
-write permissions on the synpop DB. Also, make sure you have thedesired version of the DB to ensure the EpiHiper
-simulations are correct. Contact **Dustin or Stefan** to get the latest versions of the syspop DB and contact networks.
-Note: The contact network file name format is hardcoded (*_contact_network_config_*-contact_0_with_lid.txt). You may
+The U.S synthetic population DB (synpop DB) and contact network files need
+to be accessible. The user should have write permissions on the synpop DB.
+Also, make sure you have thedesired version of the DB to ensure the EpiHiper
+simulations are correct. Contact **Dustin or Stefan** to get the latest
+versions of the syspop DB and contact networks.
+
+**Note**: The contact network file name format is hardcoded (*_contact_network_config_*-contact_0_with_lid.txt). You may
 get errors if this naming conversion is not followed.
 
 # Modify the environment.sh file such that CACHE_ROOT, SYNPOP_ROOT, CODE_DIR, LOG_DIR and conda envs point
@@ -313,10 +317,13 @@ Run all the steps 1 through 5. In step-5, select "submit_controller" option.
 
 1. AWS admin account with permissions to create/delete resources.
 2. Create and download a keypair using the steps [here](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/create-key-pairs.html).Make sure you save your .pem file locally.
-3. Session credentials namely, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_SESSION_TOKEN. Add these entries in the environment.sh file and also export them in your shell. Note: These crenetials expire periodically in which case you need to get new credentials for the session.
+3. Session credentials namely, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_SESSION_TOKEN.
+   Add these entries in the environment.sh file and also export them in your shell.
+   **Note**: These crenetials expire periodically in which case you need to get new credentials for the session.
   
 
-Run all the steps, 1 through 5 on the headnode on each of the HPC clusters. Additionally, you will need to install the following packages in your py_env created in step-1. 
+Run all the steps, 1 through 5 on the headnode on each of the HPC clusters. 
+Additionally, you will need to install the following packages in your py_env created in step-1. 
 
 Install Node Version Manager with the lastest Long-Term Support (TS) Node.js version.
 
@@ -358,7 +365,8 @@ $ pip install awscli
 ```
 
 
-In step-5, select "start_aws_controller" option. After the controller instance starts, SSH to the instance and run the controller.
+In step-5, select "start_aws_controller" option. After the controller instance starts, 
+SSH to the instance and run the controller.
 
 ```
 # For example, after selecting the 'start_aws_controller', you will be promted to SSH to the instance.
@@ -411,9 +419,13 @@ $ sudo apt-get install libpq-dev postgresql-server-dev-all
 $ sudo apt-get install -y libpq5
 ```
 
-Run all the steps, 1 through 5 on the headnode of each of the HPC clusters (local and AWS clusters). In step-5, select "start_aws_controller" option. Once the controller instance is ready, SSH to the AWS  controller installer and start the controller script (see configuration b steps).
+Run all the steps, 1 through 5 on the headnode of each of the HPC clusters 
+(local and AWS clusters). In step-5, select "start_aws_controller" option. 
+Once the controller instance is ready, SSH to the AWS  controller installer 
+and start the controller script (see configuration b steps).
 
-Once the EpiHiper simulation tasks are completed, make sure you delete the AWS HPC cluster and controller resources. 
+Once the EpiHiper simulation tasks are completed, make sure you delete 
+the AWS HPC cluster and controller resources. 
 **If you leave the resources running, Amazon will charge for the running resources even if you do not use them.**
 
 ```
