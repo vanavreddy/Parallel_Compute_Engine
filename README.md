@@ -13,7 +13,7 @@ Utilities for setting up and running EpiHiper.
 
 These are common steps to setup the pipeline, these steps are executed in all three configurations.  
 
-1. Set up the conda environment
+1. Set up the conda environment (one time setup)
 2. Set up the environment File
 3. Install epihiper_setup_utils and mackenzie
 4. Partition the networks
@@ -259,9 +259,14 @@ so that cmake can find the conda environment's postgres installation.
 
 ## 4. Partitioning the networks
 ```
-  # Modify the environment.sh file such that CACHE_ROOT, SYNPOP_ROOT, CODE_DIR, LOG_DIR and conda envs
- point to the correct filesystem paths on that cluster.
+The U.S synthetic population DB (synpop DB) and contact network files need to be accessible. The user should have
+write permissions on the synpop DB. Also, make sure you have thedesired version of the DB to ensure the EpiHiper
+simulations are correct. Contact **Dustin or Stefan** to get the latest versions of the syspop DB and contact networks.
+Note: The contact network file name format is hardcoded (*_contact_network_config_*-contact_0_with_lid.txt). You may
+get errors if this naming conversion is not followed.
 
+# Modify the environment.sh file such that CACHE_ROOT, SYNPOP_ROOT, CODE_DIR, LOG_DIR and conda envs point
+to the correct filesystem paths on that cluster. 
   $ cd Unified_Epihiper_Pipeline_Setup
   $ . environment.sh
   $ cd synpop_partition
