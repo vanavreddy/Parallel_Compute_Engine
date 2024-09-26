@@ -71,6 +71,6 @@ CONTROLLER_INSTANCE_TYPE='t2.large'
 EBS_VOL_SIZE=500
 
 # get fresh credentials once they expire
-export AWS_ACCESS_KEY_ID=""
-export AWS_SECRET_ACCESS_KEY=""
-export AWS_SESSION_TOKEN=""
+AWS_ACCESS_KEY_ID=""
+AWS_SECRET_ACCESS_KEY=""
+AWS_SESSION_TOKEN=""
